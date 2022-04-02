@@ -1,11 +1,17 @@
 package hu.uni.ekcu.Nimeria.auth;
 
+import hu.uni.ekcu.Nimeria.registration.token.ConfirmationToken;
+import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenRepository;
+import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -14,6 +20,7 @@ public class ApplicationUserService implements UserDetailsService {
     private final static String USER_NOT_FOUND_MESSAGE = "username %s not found"; // TODO: create exception
     private final ApplicationUserRepository applicationUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
 
     @Override
@@ -37,7 +44,22 @@ public class ApplicationUserService implements UserDetailsService {
 
         applicationUserRepository.save(user);
 
-        //TODO send confirmation token
-        return "it works";
+        String token = UUID.randomUUID().toString();
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                user
+        );
+
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+        //TODO: send email
+
+        return token;
+    }
+    public int enableAppUser(String email) {
+        return applicationUserRepository.enableAppUser(email);
     }
 }
