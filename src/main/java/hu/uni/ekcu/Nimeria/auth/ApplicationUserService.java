@@ -22,10 +22,14 @@ public class ApplicationUserService implements UserDetailsService {
     }
 
     public String signUpUser(ApplicationUser user){
-        boolean userAlreadyExists = applicationUserRepository.findByUsername(user.getEmail())
-                .isPresent();
-        if (userAlreadyExists)
-            throw new IllegalStateException("Email already taken");
+        boolean emailAlreadyInUse = applicationUserRepository.findByEmail(user.getEmail()).isPresent();
+
+        boolean usernameAlreadyInUse = applicationUserRepository.findByUsername(user.getUsername()).isPresent();
+
+        if (emailAlreadyInUse)
+            throw new IllegalStateException("email already taken");
+        if (usernameAlreadyInUse)
+            throw new IllegalStateException("username already in use");
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 

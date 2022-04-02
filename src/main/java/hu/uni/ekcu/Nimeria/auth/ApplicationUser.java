@@ -45,7 +45,7 @@ public class ApplicationUser implements UserDetails {
     private AppUserRole appUserRole;
 
     private boolean isAccountNonExpired = true;
-    private boolean isAccountNonLocked = true;
+    private boolean isAccountNonLocked = false;
     private boolean isCredentialsNonExpired = true;
     private boolean isEnabled = true;
 
