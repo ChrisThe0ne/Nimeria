@@ -47,9 +47,8 @@ public class ApplicationUserService implements UserDetailsService {
 
                     String newToken = UUID.randomUUID().toString(); //create new token
 
-                    confirmationTokenService.setExpiresAt(confirmationTokenRepository.findByApplicationUser(applicationUserRepository.getApplicationUserByEmail(user.getEmail())).getToken()); // update expiration time (15 minutes)
 
-                    confirmationTokenService.setToken(confirmationTokenRepository.findByApplicationUser(applicationUserRepository.getApplicationUserByEmail(user.getEmail())).getToken(), newToken); //update token in the tokens table
+                    confirmationTokenService.setTokenValueAndExpirationTime(confirmationTokenRepository.findByApplicationUser(applicationUserRepository.getApplicationUserByEmail(user.getEmail())).getToken(), newToken); //update token in the tokens table
 
                     return newToken; //Just for POSTMAN visualization
                 }
