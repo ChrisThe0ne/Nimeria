@@ -1,6 +1,6 @@
 ## Követelménylista
 | Megnevezés | ID | Leirás | Jogosultság
-|--|--|--|--|--|
+|--|--|--|--|
 | Regisztráció | K\1 | Regisztráció a rendszerbe | Látogatói
 |Be/Kijelentkezés | K\2| Bejelentkezés felhasználónévvel és jelszóval, illetve kijelentkezés | Felhasználói
 |Profil megtekintése | K\3 | Saját regisztrációs adatok megtekintése | Felhasználói
