@@ -35,11 +35,9 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
             "WHERE c.token = ?1")
     void updateToken(String token, String newToken, LocalDateTime currentTime, LocalDateTime newExpiresAt);
 
-    //UPDATE token expiration date
     @Transactional
     @Modifying
-    @Query("UPDATE ConfirmationToken c " +
-            "SET c.expiresAt = ?2 " +
-            "WHERE c.token = ?1")
-    void updateExpiresAt(String token, LocalDateTime expiresAt);
+    @Query("DELETE FROM ConfirmationToken " +
+            "WHERE applicationUser.id = ?1")
+    void DeleteAllRowsByUserId(Long userid);
 }

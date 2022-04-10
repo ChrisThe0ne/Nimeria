@@ -35,7 +35,7 @@ public class RegistrationService {
                         request.getFirstName(),
                         request.getLastName(),
                         request.getCountry(),
-                        1L,
+                        0L,
                         AppUserRole.USER
                 )
         );

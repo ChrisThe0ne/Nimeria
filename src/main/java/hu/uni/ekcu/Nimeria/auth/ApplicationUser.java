@@ -39,7 +39,7 @@ public class ApplicationUser implements UserDetails {
     private String lastName;
     private String country;
 
-    private Long level;
+    private Long score;
 
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
@@ -56,7 +56,7 @@ public class ApplicationUser implements UserDetails {
                            String firstName,
                            String lastName,
                            String country,
-                           Long level,
+                           Long score,
                            AppUserRole appUserRole) {
         this.username = username;
         this.password = password;
@@ -64,7 +64,7 @@ public class ApplicationUser implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.country = country;
-        this.level = level;
+        this.score = score;
         this.appUserRole = appUserRole;
     }
 

@@ -16,6 +16,7 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
     Optional<ApplicationUser> findByEmail(String email);
 
     ApplicationUser getApplicationUserByEmail(String email);
+    ApplicationUser getApplicationUserByUsername(String username);
 
     @Transactional
     @Modifying

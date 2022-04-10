@@ -3,7 +3,6 @@ package hu.uni.ekcu.Nimeria.exercise;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,12 +18,17 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public void addExercise(@Valid @RequestBody Exercise exercise){
-        exerciseService.addExercise(exercise);
+    public String addExercise(@RequestBody ExerciseRequest request){
+        return exerciseService.addExercise(request);
     }
 
     @DeleteMapping(path = "{exerciseId}")
-    public void deleteExercise(@PathVariable("exerciseId") Long exerciseId){
-        exerciseService.deleteExercise(exerciseId);
+    public String deleteExercise(@PathVariable("exerciseId") Long exerciseId){
+        return exerciseService.deleteExercise(exerciseId);
+    }
+
+    @PutMapping
+    public String updateExercise(@RequestBody Exercise exercise){
+        return exerciseService.updateExercise(exercise);
     }
 }

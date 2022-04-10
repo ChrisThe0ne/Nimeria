@@ -15,7 +15,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table
 public class Exercise {
@@ -38,4 +37,23 @@ public class Exercise {
     @Column(nullable = false)
     private String solution;
 
+    private String hintOne;
+    private String hintTwo;
+    private String hintThree;
+    private Integer fullPoints;
+    private Integer hintOnePoints;
+    private Integer hintTwoPoints;
+    private Integer hintThreePoints;
+
+    public Exercise(String description, String solution, String hintOne, String hintTwo, String hintThree, Integer fullPoints, Integer hintOnePoints, Integer hintTwoPoints, Integer hintThreePoints) {
+        this.description = description;
+        this.solution = solution;
+        this.hintOne = hintOne;
+        this.hintTwo = hintTwo;
+        this.hintThree = hintThree;
+        this.fullPoints = fullPoints;
+        this.hintOnePoints = hintOnePoints;
+        this.hintTwoPoints = hintTwoPoints;
+        this.hintThreePoints = hintThreePoints;
+    }
 }
