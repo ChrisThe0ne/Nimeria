@@ -12,11 +12,6 @@ public class UserController {
 
     private ApplicationUserService applicationUserService;
 
-    @DeleteMapping(path = "deleteAnyUser/{userid}")
-    public String deleteAnyUser(@PathVariable("userid") Long id){
-        return applicationUserService.deleteAnyUser(id);
-    }
-
     @GetMapping(path = "{username}")
     public ProfileDetailsRequest returnProfileDetails(@PathVariable("username") String username){
         return applicationUserService.returnProfileDetails(username);
@@ -25,6 +20,11 @@ public class UserController {
     @PutMapping(path = "modifyProfile")
     public String updateProfileDetails(@RequestBody UpdateProfileDetailsRequest request){
         return applicationUserService.updateProfileDetails(request);
+    }
+
+    @DeleteMapping(path = "deleteProfile")
+    public void deleteProfile(){
+        applicationUserService.deleteProfile();
     }
 
 

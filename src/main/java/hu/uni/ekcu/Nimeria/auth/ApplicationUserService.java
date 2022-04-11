@@ -2,14 +2,10 @@ package hu.uni.ekcu.Nimeria.auth;
 
 import hu.uni.ekcu.Nimeria.auth.requests.ProfileDetailsRequest;
 import hu.uni.ekcu.Nimeria.auth.requests.UpdateProfileDetailsRequest;
-import hu.uni.ekcu.Nimeria.email.EmailSender;
-import hu.uni.ekcu.Nimeria.registration.RegistrationService;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationToken;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenRepository;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.jni.Local;
-import org.apache.tomcat.jni.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -151,5 +148,44 @@ public class ApplicationUserService implements UserDetailsService {
         return "Profile details modified successfully!";
     }
 
+    public void deleteProfile(){
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
+        if (!applicationUserRepository.findByUsername(currentPrincipalName).isPresent())
+            throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, currentPrincipalName));
+
+        confirmationTokenRepository.DeleteAllRowsByUserId(applicationUserRepository.getApplicationUserByUsername(currentPrincipalName).getId());
+
+        //TODO REMOVE ROWS FROM SOLUTION TABLE
+
+        applicationUserRepository.deleteById(applicationUserRepository.getApplicationUserByUsername(currentPrincipalName).getId());
+    }
+
+    public String updateAnyUser(UpdateProfileDetailsRequest request, Long id){
+
+        ApplicationUser user = applicationUserRepository.getById(id);
+
+        if (applicationUserRepository.findByUsername(request.getUsername()).isPresent() && !user.getUsername().equals(request.getUsername()) )
+            throw new IllegalStateException("Username already exists!");
+
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        if (applicationUserRepository.findByEmail(request.getEmail()).isPresent() && !user.getEmail().equals(request.getEmail()) )
+            throw new IllegalStateException("Email already in use!");
+        user.setEmail(request.getEmail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setCountry(request.getCountry());
+
+        applicationUserRepository.save(user);
+
+        return "Profile details modified successfully by admin!";
+    }
+
+    public List<ApplicationUser> getAllUsers(){
+        return applicationUserRepository.findAll();
+    }
 }

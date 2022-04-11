@@ -11,9 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -43,8 +40,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/api/v*/user").permitAll()
 //                .antMatchers("/api/v*/user*").permitAll()
 //                .antMatchers("/api/v*/user/deleteAnyUser/*").permitAll()
-                .antMatchers("/api/v*/user/modifyProfile/*").permitAll()
-                .antMatchers("/api/v*/user/*").permitAll()
+//                .antMatchers("/api/v*/user/modifyProfile/*").permitAll()
+                .antMatchers("/api/v*/user/deleteProfile*").permitAll()
+                .antMatchers("/api/v*/userManagement/updateAnyUser/*").permitAll()
+                .antMatchers("/api/v*/userManagement/getAllUsers").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
