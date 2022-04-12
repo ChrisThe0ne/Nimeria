@@ -1,4 +1,4 @@
-package hu.uni.ekcu.Nimeria.exercise;
+package hu.uni.ekcu.Nimeria.exercise.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

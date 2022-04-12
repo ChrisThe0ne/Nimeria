@@ -1,5 +1,7 @@
 package hu.uni.ekcu.Nimeria.exercise;
 
+import hu.uni.ekcu.Nimeria.exercise.requests.ExerciseGetRequest;
+import hu.uni.ekcu.Nimeria.exercise.requests.ExerciseRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +32,10 @@ public class ExerciseController {
     @PutMapping
     public String updateExercise(@RequestBody Exercise exercise){
         return exerciseService.updateExercise(exercise);
+    }
+
+    @GetMapping(path = {"{exerciseId}"})
+    public ExerciseGetRequest getExerciseById(@PathVariable("exerciseId") Long exerciseId){
+        return exerciseService.getExerciseById(exerciseId);
     }
 }

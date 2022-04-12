@@ -2,8 +2,12 @@ package hu.uni.ekcu.Nimeria.exercise;
 
 import hu.uni.ekcu.Nimeria.exercise.exception.BadRequestException;
 import hu.uni.ekcu.Nimeria.exercise.exception.ExerciseNotFoundException;
+import hu.uni.ekcu.Nimeria.exercise.requests.ExerciseGetRequest;
+import hu.uni.ekcu.Nimeria.exercise.requests.ExerciseRequest;
+import hu.uni.ekcu.Nimeria.solution.SolutionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +16,7 @@ import java.util.List;
 public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
+    private final SolutionRepository solutionRepository;
 
     public List<Exercise> getAllExercises(){
         return exerciseRepository.findAll();
@@ -37,12 +42,17 @@ public class ExerciseService {
         return "Exercise saved";
     }
 
+    @Transactional
     public String deleteExercise(Long exerciseId){
         if (!exerciseRepository.existsById(exerciseId))
             throw new ExerciseNotFoundException("Exercise with id: " + exerciseId + " does not exists");
+
+        solutionRepository.deleteAllBySolutionPK_Exercise(exerciseRepository.getById(exerciseId));
+
         exerciseRepository.deleteById(exerciseId);
 
         return "Exercise with id: " + exerciseId + " successfully deleted!";
+
     }
 
     public String updateExercise(Exercise exercise){
@@ -54,4 +64,20 @@ public class ExerciseService {
 
         return "Exercise updated";
     }
+
+    public ExerciseGetRequest getExerciseById(Long id){
+
+        Exercise exercise = exerciseRepository.getById(id);
+
+        return new ExerciseGetRequest(
+                exercise.getId(),
+                exercise.getDescription(),
+                exercise.getHintOne(),
+                exercise.getHintTwo(),
+                exercise.getHintThree(),
+                exercise.getHintOnePoints(),
+                exercise.getHintTwoPoints(),
+                exercise.getHintThreePoints());
+    }
+
 }

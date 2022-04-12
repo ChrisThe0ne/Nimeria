@@ -5,6 +5,7 @@ import hu.uni.ekcu.Nimeria.auth.requests.UpdateProfileDetailsRequest;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationToken;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenRepository;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenService;
+import hu.uni.ekcu.Nimeria.solution.SolutionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +29,7 @@ public class ApplicationUserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final ConfirmationTokenRepository confirmationTokenRepository;
+    private final SolutionRepository solutionRepository;
 
 
     @Override
@@ -85,6 +88,7 @@ public class ApplicationUserService implements UserDetailsService {
 
         return token;
     }
+
     public int enableAppUser(String email) {
         return applicationUserRepository.enableAppUser(email);
     }
@@ -148,19 +152,23 @@ public class ApplicationUserService implements UserDetailsService {
         return "Profile details modified successfully!";
     }
 
+    @Transactional
     public void deleteProfile(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
-        if (!applicationUserRepository.findByUsername(currentPrincipalName).isPresent())
+        if (applicationUserRepository.findByUsername(currentPrincipalName).isEmpty())
             throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, currentPrincipalName));
 
         confirmationTokenRepository.DeleteAllRowsByUserId(applicationUserRepository.getApplicationUserByUsername(currentPrincipalName).getId());
 
-        //TODO REMOVE ROWS FROM SOLUTION TABLE
+        ApplicationUser user = applicationUserRepository.getApplicationUserByUsername(currentPrincipalName);
 
-        applicationUserRepository.deleteById(applicationUserRepository.getApplicationUserByUsername(currentPrincipalName).getId());
+        solutionRepository.deleteAllBySolutionPK_User(user);
+
+
+        applicationUserRepository.deleteById(user.getId());
     }
 
     public String updateAnyUser(UpdateProfileDetailsRequest request, Long id){
@@ -187,5 +195,14 @@ public class ApplicationUserService implements UserDetailsService {
 
     public List<ApplicationUser> getAllUsers(){
         return applicationUserRepository.findAll();
+    }
+
+    public void addPointsToProfile(Long points){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
+        ApplicationUser user = applicationUserRepository.getApplicationUserByUsername(currentPrincipalName);
+        user.setScore(user.getScore() + points);
+        applicationUserRepository.save(user);
     }
 }
