@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -51,16 +54,17 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .passwordParameter("password")
-                .usernameParameter("username");
-                  /*  .loginPage("/login")
-                    .permitAll()
-                    .defaultSuccessUrl("/main", true)
-                    .passwordParameter("password")
-                    .usernameParameter("username")
+                .usernameParameter("username")
+                .defaultSuccessUrl("main", true)
+//                .loginPage("/login")
+//                    .permitAll()
+//                    .defaultSuccessUrl("/main", true)
+//                    .passwordParameter("password")
+//                    .usernameParameter("username")
                 .and()
                 .rememberMe()
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(28))
-                    .key("tokensecurityseed")
+                    .key("tokenSecuritySeed")
                     .rememberMeParameter("remember-me")
                 .and()
                 .logout()
@@ -69,7 +73,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .clearAuthentication(true)
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login");*/
+                    .logoutSuccessUrl("/login");
 
 
     }

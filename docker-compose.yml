@@ -5,3 +5,7 @@ services:
       - '1080:1080'
       - '1025:1025'
     image: soulteary/maildev
+  backend:
+    ports:
+      - '8080:8080'
+    image: 'christhe0ne/nimeria-backend:v1'
