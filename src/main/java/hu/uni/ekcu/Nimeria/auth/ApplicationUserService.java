@@ -1,11 +1,13 @@
 package hu.uni.ekcu.Nimeria.auth;
 
 import hu.uni.ekcu.Nimeria.auth.requests.ProfileDetailsRequest;
+import hu.uni.ekcu.Nimeria.auth.requests.ProfileDetailsWithIdRequest;
 import hu.uni.ekcu.Nimeria.auth.requests.UpdateProfileDetailsRequest;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationToken;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenRepository;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenService;
 import hu.uni.ekcu.Nimeria.solution.SolutionRepository;
+import hu.uni.ekcu.Nimeria.solution.requests.SolutionGetRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +27,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ApplicationUserService implements UserDetailsService {
 
-    private final static String USER_NOT_FOUND_MESSAGE = "username %s not found"; // TODO: create exception
+    private final static String USER_NOT_FOUND_MESSAGE = "username %s not found";
     private final ApplicationUserRepository applicationUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
@@ -101,11 +104,9 @@ public class ApplicationUserService implements UserDetailsService {
 
         confirmationTokenRepository.DeleteAllRowsByUserId(id);
 
-        //TODO delete completed exercises by this id
+        solutionRepository.deleteAllBySolutionPK_User(applicationUserRepository.getById(id));
 
         applicationUserRepository.deleteById(id);
-
-
 
         return "User with id: " + id + " deleted successfully";
     }
@@ -193,8 +194,25 @@ public class ApplicationUserService implements UserDetailsService {
         return "Profile details modified successfully by admin!";
     }
 
-    public List<ApplicationUser> getAllUsers(){
-        return applicationUserRepository.findAll();
+    public List<ProfileDetailsWithIdRequest> getAllUsers(){
+        List<ApplicationUser> applicationUsers = applicationUserRepository.findAll();
+
+        List<ProfileDetailsWithIdRequest> profileDetailsWithIdRequests = new ArrayList<>();
+
+        for (int i = 0; i < applicationUsers.stream().count(); i++){
+            profileDetailsWithIdRequests.add(new ProfileDetailsWithIdRequest(
+                    applicationUsers.get(i).getUsername(),
+                    applicationUsers.get(i).getEmail(),
+                    applicationUsers.get(i).getFirstName(),
+                    applicationUsers.get(i).getLastName(),
+                    applicationUsers.get(i).getCountry(),
+                    applicationUsers.get(i).getScore(),
+                    applicationUsers.get(i).getId()
+            ));
+        }
+
+        return profileDetailsWithIdRequests;
+
     }
 
     public void addPointsToProfile(Long points){

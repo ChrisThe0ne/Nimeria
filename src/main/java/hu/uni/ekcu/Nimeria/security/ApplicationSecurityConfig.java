@@ -4,6 +4,7 @@ import hu.uni.ekcu.Nimeria.auth.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -35,27 +36,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
-                .antMatchers("/api/v*/registration").permitAll()
-                .antMatchers("/api/v*/registration/*").permitAll()
-                .antMatchers("/api/v*/exercises").permitAll()
-                .antMatchers("/api/v*/exercises/*").permitAll()
-                .antMatchers("/api/v*/user").permitAll()
-                .antMatchers("/api/v*/user*").permitAll()
-                .antMatchers("/api/v*/user/deleteAnyUser/*").permitAll()
-                .antMatchers("/api/v*/user/modifyProfile/*").permitAll()
-                .antMatchers("/api/v*/user/deleteProfile*").permitAll()
-                .antMatchers("/api/v*/userManagement/updateAnyUser/*").permitAll()
-                .antMatchers("/api/v*/userManagement/getAllUsers").permitAll()
-                .antMatchers("/api/v*/solution").permitAll()
-                .antMatchers("/api/v*/solution/*").permitAll()
+                .antMatchers("/", "/index", "/creators", "/registration", "/css/*", "/js/*").permitAll()
+                .antMatchers("/api/v1/registration").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
                 .passwordParameter("password")
                 .usernameParameter("username")
-                .defaultSuccessUrl("main", true)
+                .defaultSuccessUrl("/", true)
 //                .loginPage("/login")
 //                    .permitAll()
 //                    .defaultSuccessUrl("/main", true)
@@ -66,14 +55,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(28))
                     .key("tokenSecuritySeed")
                     .rememberMeParameter("remember-me")
-                .and()
-                .logout()
-                    .logoutUrl("/logout")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                    .clearAuthentication(true)
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login");
+             .and()
+             .logout()
+                 .logoutUrl("/logout")
+//                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                 .clearAuthentication(true)
+                 .invalidateHttpSession(true)
+                 .deleteCookies("JSESSIONID", "remember-me")
+                 .logoutSuccessUrl("/");
 
 
     }

@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:mysql://localhost:3306/Nimeria</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="@aws" uuid="2b8616c1-d494-4da2-8d35-a3e6fe7065fa">
+    <data-source source="LOCAL" name="@aws" uuid="f2d8a10c-a15a-491b-aad2-7bd214bce627">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
