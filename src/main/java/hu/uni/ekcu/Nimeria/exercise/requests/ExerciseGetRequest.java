@@ -16,6 +16,7 @@ public class ExerciseGetRequest {
     private final String hintOne;
     private final String hintTwo;
     private final String hintThree;
+    private final Integer fullPoints;
     private final Integer hintOnePoints;
     private final Integer hintTwoPoints;
     private final Integer hintThreePoints;

@@ -21,8 +21,14 @@ public class ExerciseController {
         return exerciseService.getExerciseById(exerciseId);
     }
 
-    @GetMapping
+    @GetMapping(path = {"forUsers"})
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public List<ExerciseGetRequest> getAllExercisesForUsers(){
+        return exerciseService.getAllExercisesForUsers();
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Exercise> getAllExercises(){
         return exerciseService.getAllExercises();
     }

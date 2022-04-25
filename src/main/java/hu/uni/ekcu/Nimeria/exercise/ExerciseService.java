@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,6 +21,27 @@ public class ExerciseService {
 
     public List<Exercise> getAllExercises(){
         return exerciseRepository.findAll();
+    }
+
+    public List<ExerciseGetRequest> getAllExercisesForUsers(){
+        List<Exercise> exercises = exerciseRepository.findAll();
+
+        List<ExerciseGetRequest> exerciseGetRequests = new ArrayList<>();
+
+        for (int i = 0; i < exercises.stream().count(); i++){
+            exerciseGetRequests.add(new ExerciseGetRequest(
+                    exercises.get(i).getId(),
+                    exercises.get(i).getDescription(),
+                    exercises.get(i).getHintOne(),
+                    exercises.get(i).getHintTwo(),
+                    exercises.get(i).getHintThree(),
+                    exercises.get(i).getFullPoints(),
+                    exercises.get(i).getHintOnePoints(),
+                    exercises.get(i).getHintTwoPoints(),
+                    exercises.get(i).getHintThreePoints()
+            ));
+        }
+        return exerciseGetRequests;
     }
 
     public String addExercise(ExerciseRequest request){
@@ -75,6 +97,7 @@ public class ExerciseService {
                 exercise.getHintOne(),
                 exercise.getHintTwo(),
                 exercise.getHintThree(),
+                exercise.getFullPoints(),
                 exercise.getHintOnePoints(),
                 exercise.getHintTwoPoints(),
                 exercise.getHintThreePoints());

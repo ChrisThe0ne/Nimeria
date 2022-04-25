@@ -4,6 +4,7 @@ import hu.uni.ekcu.Nimeria.auth.AppUserRole;
 import hu.uni.ekcu.Nimeria.auth.ApplicationUser;
 import hu.uni.ekcu.Nimeria.auth.ApplicationUserService;
 import hu.uni.ekcu.Nimeria.email.EmailSender;
+import hu.uni.ekcu.Nimeria.exercise.exception.BadRequestException;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationToken;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class RegistrationService {
         boolean isEmailValid = emailValidator.test(request.getEmail());
 
         if (!isEmailValid)
-            throw new IllegalStateException("email not valid");
+            throw new BadRequestException("email not valid");
         String token = applicationUserService.signUpUser(
                 new ApplicationUser(
                         request.getUsername(),
@@ -54,16 +55,16 @@ public class RegistrationService {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
                 .orElseThrow(() ->
-                        new IllegalStateException("token not found"));
+                        new BadRequestException("token not found"));
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+            throw new BadRequestException("email already confirmed");
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
+            throw new BadRequestException("token expired");
         }
 
         confirmationTokenService.setConfirmedAt(token);
@@ -90,7 +91,7 @@ public class RegistrationService {
                 "                  \n" +
                 "                    </td>\n" +
                 "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirm your email</span>\n" +
+                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Nimeria project</span>\n" +
                 "                    </td>\n" +
                 "                  </tr>\n" +
                 "                </tbody></table>\n" +
@@ -128,7 +129,7 @@ public class RegistrationService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering. Please click on the below link to activate your account: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Üdv " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Köszönjük hogy regisztráltál! Fiókod aktiválásához kérlek kattints az aktiválás gombra: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Aktiválás</a> </p></blockquote>\n A megerősítő link 15 percen belül lejár." +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +

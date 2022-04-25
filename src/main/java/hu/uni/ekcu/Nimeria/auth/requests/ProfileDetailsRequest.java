@@ -17,5 +17,4 @@ public class ProfileDetailsRequest {
     private final String lastName;
     private final String country;
     private final Long score;
-
 }

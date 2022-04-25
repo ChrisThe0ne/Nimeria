@@ -3,6 +3,7 @@ package hu.uni.ekcu.Nimeria.auth;
 import hu.uni.ekcu.Nimeria.auth.requests.ProfileDetailsRequest;
 import hu.uni.ekcu.Nimeria.auth.requests.ProfileDetailsWithIdRequest;
 import hu.uni.ekcu.Nimeria.auth.requests.UpdateProfileDetailsRequest;
+import hu.uni.ekcu.Nimeria.exercise.exception.BadRequestException;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationToken;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenRepository;
 import hu.uni.ekcu.Nimeria.registration.token.ConfirmationTokenService;
@@ -64,12 +65,12 @@ public class ApplicationUserService implements UserDetailsService {
                 return confirmationTokenRepository.findByApplicationUser(applicationUserRepository.getApplicationUserByEmail(user.getEmail())).getToken(); //Just for POSTMAN visualization
 
             }
-            else throw new IllegalStateException("email already taken");
+            else throw new BadRequestException("email already taken");
 
         }
 
         if (usernameAlreadyInUse)
-            throw new IllegalStateException("username already in use");
+            throw new BadRequestException("username already in use");
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
@@ -100,7 +101,7 @@ public class ApplicationUserService implements UserDetailsService {
         boolean userExistsWithThatId = applicationUserRepository.findById(id).isPresent();
 
         if (!userExistsWithThatId)
-            throw new IllegalStateException("No user exists with id: " + id);
+            throw new BadRequestException("No user exists with id: " + id);
 
         confirmationTokenRepository.DeleteAllRowsByUserId(id);
 
@@ -135,12 +136,12 @@ public class ApplicationUserService implements UserDetailsService {
         String currentPrincipalName = authentication.getName();
 
         if (!request.getUsername().equals(currentPrincipalName))
-            throw new IllegalStateException("You can only modify your own profile!" + currentPrincipalName + " " +  request.getUsername());
+            throw new BadRequestException("You can only modify your own profile!" + currentPrincipalName + " " +  request.getUsername());
 
         ApplicationUser user = applicationUserRepository.getApplicationUserByUsername(request.getUsername());
 
         if (applicationUserRepository.findByEmail(request.getEmail()).isPresent() && !request.getEmail().equals(user.getEmail()))
-            throw new IllegalStateException("Email already in use");
+            throw new BadRequestException("Email already in use");
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
@@ -177,13 +178,13 @@ public class ApplicationUserService implements UserDetailsService {
         ApplicationUser user = applicationUserRepository.getById(id);
 
         if (applicationUserRepository.findByUsername(request.getUsername()).isPresent() && !user.getUsername().equals(request.getUsername()) )
-            throw new IllegalStateException("Username already exists!");
+            throw new BadRequestException("Username already exists!");
 
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         if (applicationUserRepository.findByEmail(request.getEmail()).isPresent() && !user.getEmail().equals(request.getEmail()) )
-            throw new IllegalStateException("Email already in use!");
+            throw new BadRequestException("Email already in use!");
         user.setEmail(request.getEmail());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());

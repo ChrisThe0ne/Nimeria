@@ -1,33 +1,33 @@
 spring:
   datasource:
-    password: nimeriajelszo
+    password: ''
     username: root
-    url: jdbc:mysql://nimeria.cvnvg9gxfh20.eu-central-1.rds.amazonaws.com:3306/nimeria
+    url: jdbc:mysql://localhost:3306/nimeria
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: 'true'
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: 'true'
   mail:
-    host: email-smtp.eu-central-1.amazonaws.com
-    port: 465
-    username: AKIAVEMID3BZ7ZLD2F6L
-    password: BFJABOQdjU/OzigecTy9Rw9qh0YIQfQc9tF1i0r1P73g
+    host: localhost
+    port: 1025
+    username: username
+    password: password
 
     properties:
       mail:
         smtp:
           ssl:
-            enable: true
+            trust: "*"
           auth: true
           starttls:
             enable: true
-          connectiontimeout: 5000000
-          timeout: 30000000
-          writetimeout: 50000000
+          connectiontimeout: 50000
+          timeout: 30000
+          writetimeout: 50000
 
 server:
   error:

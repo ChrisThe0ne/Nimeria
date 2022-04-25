@@ -23,5 +23,4 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
     @Query("UPDATE ApplicationUser a " +
             "SET a.isEnabled = TRUE WHERE a.email = ?1")
     int enableAppUser(String email);
-
 }

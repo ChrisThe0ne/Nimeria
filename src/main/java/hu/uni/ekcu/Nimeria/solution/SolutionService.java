@@ -4,6 +4,7 @@ import hu.uni.ekcu.Nimeria.auth.ApplicationUser;
 import hu.uni.ekcu.Nimeria.auth.ApplicationUserRepository;
 import hu.uni.ekcu.Nimeria.auth.ApplicationUserService;
 import hu.uni.ekcu.Nimeria.exercise.ExerciseRepository;
+import hu.uni.ekcu.Nimeria.exercise.exception.BadRequestException;
 import hu.uni.ekcu.Nimeria.solution.requests.SolutionGetRequest;
 import hu.uni.ekcu.Nimeria.solution.requests.SolutionRecordRequest;
 import lombok.AllArgsConstructor;
@@ -34,15 +35,15 @@ public class SolutionService {
                 exerciseRepository.getById(request.getExerciseId()));
 
         if (solutionRepository.findById(primaryKey).isPresent())
-            throw new IllegalStateException("User already solved this exercise!");
+            throw new BadRequestException("User already solved this exercise!");
 
         if (!exerciseRepository.getById(request.getExerciseId()).getSolution().equals(request.getSolution()))
-            throw new IllegalStateException("The solution is not correct!");
+            throw new BadRequestException("The solution is not correct!");
 
         Long pointsAwarded = exerciseRepository.getById(request.getExerciseId()).getFullPoints()- request.getMinusPoints();
 
         if (pointsAwarded < 1)
-            throw new IllegalStateException("Minus points for tips configured incorrectly");
+            throw new BadRequestException("Minus points for tips configured incorrectly");
 
         applicationUserService.addPointsToProfile(pointsAwarded);
 
@@ -65,10 +66,10 @@ public class SolutionService {
 
         List<Solution> solutions = solutionRepository.getSolutionsBySolutionPK_User(user);
 
-        List<SolutionGetRequest> solutionGetRequests = new ArrayList<SolutionGetRequest>();
+        List<SolutionGetRequest> solutionGetRequests = new ArrayList<>();
 
         if(solutions.isEmpty())
-            throw new IllegalStateException("No solutions submitted by this user");
+            throw new BadRequestException("No solutions submitted by this user");
 
         for (int i = 0; i < solutions.stream().count(); i++){
             solutionGetRequests.add(new SolutionGetRequest(

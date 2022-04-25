@@ -1,4 +1,4 @@
-package hu.uni.ekcu.Nimeria.controller;
+package hu.uni.ekcu.Nimeria.template;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
